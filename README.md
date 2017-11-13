@@ -96,6 +96,11 @@ On the pre-lollipop devices _DialogSpotColor_ item won't work. As workaround jus
 
 ### Release notes
 
+**[v0.85, November 13th 2017][11]**
+* Fixed issues with setMessage
+* Fixed issues if the text was too long
+* Added margins for the message
+
 **[v0.7, November 23th 2015][10]**
 * Override message setter
 
@@ -117,6 +122,10 @@ On the pre-lollipop devices _DialogSpotColor_ item won't work. As workaround jus
 ### Developed By
 
 Maksym Dybarskyi - http://d-max.info
+
+### Improved By
+
+Federico Navarrete - http://supernovaic.tk
 
 ===========
 
