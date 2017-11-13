@@ -71,7 +71,11 @@ public class SpotsDialog extends AlertDialog {
 
     @Override
     public void setMessage(CharSequence message) {
-        ((TextView) findViewById(R.id.dmax_spots_title)).setText(message);
+        this.message = message; // this is necessary if textView null
+        TextView textView = (TextView) findViewById(R.id.dmax_spots_title);
+        if (textView != null) {
+             textView.setText(message);
+        }
     }
 
     //~
