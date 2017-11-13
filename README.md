@@ -163,3 +163,4 @@ Federico Navarrete - http://supernovaic.tk
 [8]: https://github.com/d-max/spots-dialog/releases/tag/v0.3
 [9]: https://github.com/d-max/spots-dialog/releases/tag/v0.4
 [10]: https://github.com/d-max/spots-dialog/releases/tag/v0.7
+[11]: https://github.com/FANMixco/spots-dialog
