@@ -1,10 +1,14 @@
 package dmax.dialog;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
+import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -12,6 +16,56 @@ import android.widget.TextView;
  * on 13.01.15 at 14:22
  */
 public class SpotsDialog extends AlertDialog {
+
+    public static class Builder {
+
+        private Context context;
+        private String message;
+        private int messageId;
+        private int themeId;
+        private boolean cancelable = true; // default dialog behaviour
+        private OnCancelListener cancelListener;
+
+        public Builder setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        public Builder setMessage(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder setMessage(@StringRes int messageId) {
+            this.messageId = messageId;
+            return this;
+        }
+
+        public Builder setTheme(@StyleRes int themeId) {
+            this.themeId = themeId;
+            return this;
+        }
+
+        public Builder setCancelable(boolean cancelable) {
+            this.cancelable = cancelable;
+            return this;
+        }
+
+        public Builder setCancelListener(OnCancelListener cancelListener) {
+            this.cancelListener = cancelListener;
+            return this;
+        }
+
+        public AlertDialog build() {
+            return new SpotsDialog(
+                    context,
+                    messageId != 0 ? context.getString(messageId) : message,
+                    themeId != 0 ? themeId : R.style.SpotsDialogDefault,
+                    cancelable,
+                    cancelListener
+            );
+        }
+    }
 
     private static final int DELAY = 150;
     private static final int DURATION = 1500;
@@ -21,26 +75,12 @@ public class SpotsDialog extends AlertDialog {
     private AnimatorPlayer animator;
     private CharSequence message;
 
-    public SpotsDialog(Context context) {
-        this(context, R.style.SpotsDialogDefault);
-    }
-
-    public SpotsDialog(Context context, CharSequence message) {
-        this(context);
-        this.message = message;
-    }
-
-    public SpotsDialog(Context context, CharSequence message, int theme) {
-        this(context, theme);
-        this.message = message;
-    }
-
-    public SpotsDialog(Context context, int theme) {
+    private SpotsDialog(Context context, String message, int theme, boolean cancelable, OnCancelListener cancelListener) {
         super(context, theme);
-    }
+        this.message = message;
 
-    public SpotsDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
+        setCancelable(cancelable);
+        if (cancelListener != null) setOnCancelListener(cancelListener);
     }
 
     @Override
@@ -58,6 +98,8 @@ public class SpotsDialog extends AlertDialog {
     protected void onStart() {
         super.onStart();
 
+        for (AnimatedView view : spots) view.setVisibility(View.VISIBLE);
+
         animator = new AnimatorPlayer(createAnimations());
         animator.play();
     }
@@ -71,11 +113,8 @@ public class SpotsDialog extends AlertDialog {
 
     @Override
     public void setMessage(CharSequence message) {
-        this.message = message; // this is necessary if textView null
-        TextView textView = (TextView) findViewById(R.id.dmax_spots_title);
-        if (textView != null) {
-             textView.setText(message);
-        }
+        this.message = message;
+        if (isShowing()) initMessage();
     }
 
     //~
@@ -87,7 +126,7 @@ public class SpotsDialog extends AlertDialog {
     }
 
     private void initProgress() {
-        ProgressLayout progress = (ProgressLayout) findViewById(R.id.dmax_spots_progress);
+        ProgressLayout progress = findViewById(R.id.dmax_spots_progress);
         size = progress.getSpotsCount();
 
         spots = new AnimatedView[size];
@@ -98,6 +137,7 @@ public class SpotsDialog extends AlertDialog {
             v.setBackgroundResource(R.drawable.dmax_spots_spot);
             v.setTarget(progressWidth);
             v.setXFactor(-1f);
+            v.setVisibility(View.INVISIBLE);
             progress.addView(v, size, size);
             spots[i] = v;
         }
@@ -106,10 +146,22 @@ public class SpotsDialog extends AlertDialog {
     private Animator[] createAnimations() {
         Animator[] animators = new Animator[size];
         for (int i = 0; i < spots.length; i++) {
-            Animator move = ObjectAnimator.ofFloat(spots[i], "xFactor", 0, 1);
+            final AnimatedView animatedView = spots[i];
+            Animator move = ObjectAnimator.ofFloat(animatedView, "xFactor", 0, 1);
             move.setDuration(DURATION);
             move.setInterpolator(new HesitateInterpolator());
             move.setStartDelay(DELAY * i);
+            move.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    animatedView.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    animatedView.setVisibility(View.VISIBLE);
+                }
+            });
             animators[i] = move;
         }
         return animators;
