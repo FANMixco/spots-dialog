@@ -1,33 +1,39 @@
 apply plugin: 'com.android.application'
 
 repositories {
-    mavenCentral()
-    maven { url "http://oss.sonatype.org/content/groups/staging" }
+    google()
+    jcenter()
+    maven {
+        url  "https://dl.bintray.com/d-max/spots-dialog"
+    }
 }
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION
-    buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
         versionName SAMPLE_VERSION_NAME
-        targetSdkVersion 21
+        targetSdkVersion 29
     }
+
+    flavorDimensions "minApi"
 
     productFlavors {
         lollipop {
             minSdkVersion 21
             versionCode SAMPLE_VERSION_CODE_LOLLIPOP
+            dimension "minApi"
         }
         kitkat {
             minSdkVersion 15
             versionCode SAMPLE_VERSION_CODE_KITKAT
+            dimension "minApi"
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -56,6 +62,6 @@ android {
 }
 
 dependencies {
-//    compile 'com.github.d-max:spots-dialog:0.6'
-    compile project(':library')
+//    compile 'com.github.d-max:spots-dialog:1.0'
+    implementation project(':library')
 }
