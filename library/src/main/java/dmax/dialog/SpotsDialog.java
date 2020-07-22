@@ -6,14 +6,18 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.support.annotation.StyleRes;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.StringRes;
+import androidx.annotation.StyleRes;
+
 
 /**
  * Created by Maxim Dybarsky | maxim.dybarskyy@gmail.com
  * on 13.01.15 at 14:22
+ * Expanded and upgraded by Federico Navarrete | fanmixco@gmail.com
+ * From 2019+
  */
 public class SpotsDialog extends AlertDialog {
 
@@ -24,6 +28,7 @@ public class SpotsDialog extends AlertDialog {
         private int messageId;
         private int themeId;
         private boolean cancelable = true; // default dialog behaviour
+        private boolean cancelTouchOutside = false; // default dialog behaviour
         private OnCancelListener cancelListener;
 
         public Builder setContext(Context context) {
@@ -51,6 +56,11 @@ public class SpotsDialog extends AlertDialog {
             return this;
         }
 
+        public Builder setCanceledOnTouchOutside(boolean cancelTouchOutside) {
+            this.cancelTouchOutside = cancelTouchOutside;
+            return this;
+        }
+
         public Builder setCancelListener(OnCancelListener cancelListener) {
             this.cancelListener = cancelListener;
             return this;
@@ -62,6 +72,7 @@ public class SpotsDialog extends AlertDialog {
                     messageId != 0 ? context.getString(messageId) : message,
                     themeId != 0 ? themeId : R.style.SpotsDialogDefault,
                     cancelable,
+                    cancelTouchOutside,
                     cancelListener
             );
         }
@@ -75,11 +86,12 @@ public class SpotsDialog extends AlertDialog {
     private AnimatorPlayer animator;
     private CharSequence message;
 
-    private SpotsDialog(Context context, String message, int theme, boolean cancelable, OnCancelListener cancelListener) {
+    private SpotsDialog(Context context, String message, int theme, boolean cancelable, boolean cancelTouchOutside, OnCancelListener cancelListener) {
         super(context, theme);
         this.message = message;
 
         setCancelable(cancelable);
+        setCanceledOnTouchOutside(cancelTouchOutside);
         if (cancelListener != null) setOnCancelListener(cancelListener);
     }
 
