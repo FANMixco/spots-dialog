@@ -1,3 +1,7 @@
+<a href="https://github.com/sponsors/FANMixco/" target="_blank">
+   <img src="https://raw.githubusercontent.com/FANMixco/Xamarin-SearchBar/master/bmc-rezr5vpd.gif" alt="sponsor" />
+</a>
+
 # Spots  progress dialog
 
 [![Maven](https://img.shields.io/badge/bintray-1.1-brightgreen.svg)](https://bintray.com/d-max/spots-dialog/d-max.spots-dialog/1.1)
